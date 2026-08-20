@@ -77,34 +77,6 @@
 
 ## 트러블슈팅
 
-### API마다 로그 형식이 다르거나 누락되어 에러 추적이 어려운 문제
-
-**[ 문제 상황 ]**<br>
-API마다 개발을 담당한 개발자가 달라 로그 형식이 제각각이었습니다. 로그가 아예 남지 않는 API도 있어서 에러가 발생하면 원인을 추적하기 어렵다는 요청이 있었습니다.
-
-**[ 원인 분석 ]**<br>
-API마다 로그 형식과 유무가 다른 근본 원인은 각 개발자가 로그를 개별적으로 작성하는 구조에 있었습니다. 그래서 완벽한 로그를 하나씩 추가하기보다, 모든 API에 최소한의 로그를 강제로 남기는 것을 1차 목표로 잡았습니다. 형식도 통일하는 것을 목표에 포함했습니다.
-
-**[ 최종 선택 ]**<br>
-Spring Interceptor를 적용했습니다. 이를 통해 모든 API 호출의 시작 시점에 로그가 자동으로 남도록 중앙화했습니다. 시작 로그만으로도 요청이 어디까지 도달했는지 경계를 알 수 있습니다. 시작 로그는 남았는데 이후 응답이나 에러 로그가 확인되지 않는 구간이 있다면, 그 구간을 역으로 추적해 문제 지점을 빠르게 좁힐 수 있습니다. 또한 Interceptor 구조는 이후 postHandle이나 afterCompletion 단계로 확장하기 쉬워서, 응답 시간·종료 로그·예외 로그 등을 추가하기에도 유리합니다. 그래서 시작 로그는 로깅 표준화의 첫 단계로 설계했습니다.
-
-**[ 결과 ]**<br>
-로그가 누락된 구간을 확인하는 것만으로 에러 발생 지점을 빠르게 좁힐 수 있게 되었습니다. 또한 모든 API가 동일한 형식의 로그를 갖추게 되면서 개발자 간 로그 편차 문제도 함께 해소되었습니다.
-
-```java
-@Slf4j
-public class LoggerInterceptor implements HandlerInterceptor {
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info(request.getMethod() + " " + request.getRequestURI() + " 요청 시작");
-        return HandlerInterceptor.super.preHandle(request, response, handler);
-    }
-}
-```
-
----
-
 ### 템플릿 타입 확장 시 테이블 중복 및 코드 수정 문제
 
 **[ 문제 상황 ]**<br>
@@ -120,6 +92,34 @@ public class LoggerInterceptor implements HandlerInterceptor {
 신규 템플릿 추가 시 기존 코드 수정 없이 확장이 가능해졌습니다.
 
 ![erd](./images/erd.png)
+
+---
+
+### API마다 로그 형식이 다르거나 누락되는 문제
+
+**[ 문제 상황 ]**<br>
+API마다 개발을 담당한 개발자가 달라 로그 형식이 제각각이었습니다. 로그가 아예 남지 않는 API도 있어서 로그 품질에 편차가 크다는 지적이 있었습니다.
+
+**[ 원인 분석 ]**<br>
+API마다 로그 형식과 유무가 다른 근본 원인은 각 개발자가 로그를 개별적으로 작성하는 구조에 있었습니다. 그래서 완벽한 로그를 하나씩 추가하기보다, 모든 API에 최소한의 로그를 강제로 남기는 것을 1차 목표로 잡았습니다. 형식도 통일하는 것을 목표에 포함했습니다.
+
+**[ 최종 선택 ]**<br>
+Spring Interceptor를 적용했습니다. 이를 통해 모든 API 호출의 시작 시점에 로그가 자동으로 남도록 중앙화했습니다. 또한 Interceptor 구조는 이후 postHandle이나 afterCompletion 단계로 확장하기 쉬워서, 응답 시간·종료 로그·예외 로그 등을 추가하기에도 유리합니다. 그래서 시작 로그는 로깅 표준화의 첫 단계로 설계했습니다.
+
+**[ 결과 ]**<br>
+모든 API가 동일한 형식의 로그를 갖추게 되면서 개발자 간 로그 편차 문제가 해소되었습니다.
+
+```java
+@Slf4j
+public class LoggerInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info(request.getMethod() + " " + request.getRequestURI() + " 요청 시작");
+        return HandlerInterceptor.super.preHandle(request, response, handler);
+    }
+}
+```
 
 <br>
 
