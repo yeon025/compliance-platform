@@ -68,12 +68,12 @@
 
 ## 기술 스택
 
-| 구분       | 스택                                  |
-| ---------- | ------------------------------------- |
-| 프론트엔드 | React                                 |
-| 백엔드     | Spring Boot · MyBatis · MySQL · Redis |
-| 인프라     | Docker · GitLab · Nexus Repository    |
-| CI/CD      | GitLab Runner                         |
+| 구분           | 스택                                     |
+| -------------- | ----------------------------------------- |
+| 프론트엔드     | React                                     |
+| 백엔드         | Spring Boot · MyBatis · MySQL · Redis     |
+| 인프라         | Docker                                    |
+| 형상관리/CI-CD | GitLab · GitLab Runner · Nexus Repository |
 
 <br>
 
