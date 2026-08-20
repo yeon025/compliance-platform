@@ -6,11 +6,14 @@
 👤 인원: 프론트엔드 3명, 백엔드 8명<br>
 💼 담당 역할: ERD 설계 및 컴플라이언스 백엔드 API 개발
 
+<br>
+
 <!-- 데모 스크린샷 또는 GIF를 여기에 추가하세요 -->
 <!-- ![demo](./docs/demo.gif) -->
+
 <div align="center">
-  <img src="./images/compliance-list.png" height="350" />
-  <img src="./images/compliance-detail.png" height="350" style="margin-left: 30px;" />
+  <img src="./images/compliance-list.png" />
+  <img src="./images/compliance-detail.png" />
 </div>
 
 <br>
